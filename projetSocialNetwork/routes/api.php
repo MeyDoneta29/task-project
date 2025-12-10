@@ -28,3 +28,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/posts/{post_id}/comments', [PostController::class, 'getComments']);
 
 });
+
+//endpoints pour les posts: creer, lister, liker et commenter

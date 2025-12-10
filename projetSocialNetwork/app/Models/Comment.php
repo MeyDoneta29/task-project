@@ -14,3 +14,5 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 }
+/*created by OpenAI's ChatGPT */
+//representation physique d'un commentaire dans la base de donnees

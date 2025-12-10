@@ -1,5 +1,5 @@
 <?php
-
+//creer,mettre en liste,liker et commenter des posts
 namespace App\Http\Controllers;
 
 use App\Models\Like;
@@ -11,7 +11,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $post=Post::With('author')->withCount('likes')->get();
+        $post=Post::With('author')->withCount('likes','comments')->get(); //charger les relations author, likes et comments
         return response()->json($post);
     }
 
