@@ -19,12 +19,23 @@ class PostController extends Controller
         $data = $request->validate([
             'content' => 'required|string',
         ]);
-
         $user_id = auth()->user()->id;
-        $post = Post::create([
+        $image = $request->file('image'); //si une image est envoyee
+        $imagePath = null;
+        if ($image) {
+            $imagePath = $image->store('post_images', 'public'); //stockage de l'image dans le dossier public/images
+        }
+        /*$post = Post::create([
             'user_id' => $user_id,
             'content' => $data['content'],
-        ]);
+            'image' => $imagePath, //ajout du chemin de l'image si elle existe
+        ]);*/
+
+        $post = new Post();
+        $post->user_id = $user_id;
+        $post->content = $request->content;
+        $post->image_url = 'http://localhost:8000/storage/' . $imagePath;
+        $post->save();
         return response()->json([
             'message' => 'Post creee avec succes',
             'post' => $post,
@@ -54,6 +65,20 @@ class PostController extends Controller
     public function getComments($post_id){
         $comments = Comment::with('user')->where('post_id', $post_id)->latest()->get();
         return response()->json($comments);
+    }
+
+    public function delete($post_id){
+        $user_id = auth()->user()->id;
+        $post = Post::where('id', $post_id)->where('user_id', $user_id)->first();
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post non trouve ou vous n\'etes pas autorise a le supprimer',
+            ], 404);
+        }
+        $post->delete();
+        return response()->json([
+            'message' => 'Post supprime avec succes',
+        ], 200);
     }
 
 }
